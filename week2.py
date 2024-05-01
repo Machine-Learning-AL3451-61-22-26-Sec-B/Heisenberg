@@ -59,5 +59,5 @@ def main():
         st.write("Predicted Output:")
         st.write(predicted_output)
 
-if name == "main":
+if __name__ == "__main__":
     main()
