@@ -1,21 +1,18 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import sklearn
-
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
 class Node:
-    def init(self, feature=None, value=None, leaf_class=None):
-        self.feature = feature        # Feature index
-        self.value = value            # Value to split on (for numerical features)
-        self.leaf_class = leaf_class  # Class label if node is a leaf
-        self.children = {}            # Dictionary to store children nodes
-
+    def __init__(self, feature=None, value=None, leaf_class=None):
+        self.feature = feature    
+        self.value = value           
+        self.leaf_class = leaf_class  
+        self.children = {}            
 class DecisionTreeID3:
-    def init(self):
+    def __init__(self):
         self.root = None
 
     def entropy(self, y):
@@ -99,9 +96,10 @@ class DecisionTreeID3:
                     return self._predict(x, node.children['right'])
             else:
                 return self._predict(x, node.children[x[node.feature]])
+
 @st.cache
 def load_data():
-    return pd.read_csv("trainingdata.csv")  # Replace "your_dataset.csv" with your dataset file name
+    return pd.read_csv("trainingdata.csv") 
 
 def preprocess_data(df):
     label_encoders = [LabelEncoder() for _ in range(df.shape[1])]
@@ -122,11 +120,8 @@ def main():
         y = df.iloc[:, -1]
 
         X = preprocess_data(X)
-
-        # Split the dataset into training and testing sets
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-        # Train the decision tree model
         tree = DecisionTreeID3()
         tree.fit(X_train.values, y_train.values)
 
@@ -144,11 +139,10 @@ def main():
             predicted_class = tree.predict(new_sample.reshape(1, -1))
             st.write(f"The predicted class is: {predicted_class[0]}")
 
-            # Evaluate the model's accuracy
             y_pred = tree.predict(X_test.values)
             accuracy = accuracy_score(y_test.values, y_pred)
             st.write(f"Accuracy: {accuracy:.2f}")
 
 
-if name == "main":
+if __name__ == "__main__":
     main()
